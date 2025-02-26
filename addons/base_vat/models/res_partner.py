@@ -603,12 +603,12 @@ class ResPartner(models.Model):
                 else:
                     res.append(False)
             elif partner.commercial_partner_id.is_company:
-                if len(vat) == 12:
+                if len(vat) == 12 or len(vat) == 8:
                     res.append(True)
                 else:
                     res.append(False)
             else:
-                if len(vat) == 10 or len(vat) == 9 or len(vat) == 8:
+                if len(vat) == 10 or len(vat) == 9:
                     res.append(True)
                 else:
                     res.append(False)

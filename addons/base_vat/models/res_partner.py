@@ -608,7 +608,7 @@ class ResPartner(models.Model):
                 else:
                     res.append(False)
             else:
-                if len(vat) == 10 or len(vat) == 9:
+                if len(vat) == 10 or len(vat) == 9 or len(vat) == 8:
                     res.append(True)
                 else:
                     res.append(False)

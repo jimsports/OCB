@@ -68,7 +68,7 @@ class MergePartnerAutomatic(models.TransientModel):
     current_line_id = fields.Many2one('base.partner.merge.line', string='Current Line')
     line_ids = fields.One2many('base.partner.merge.line', 'wizard_id', string='Lines')
     partner_ids = fields.Many2many('res.partner', string='Contacts', context={'active_test': False})
-    dst_partner_id = fields.Many2one('res.partner', string='Destination Contact')
+    dst_partner_id = fields.Many2one('res.partner', string='Destination Contact', domain=lambda self: [('id', 'in', self.partner_ids.ids)])
 
     exclude_contact = fields.Boolean('A user associated to the contact')
     exclude_journal_item = fields.Boolean('Journal Items associated to the contact')

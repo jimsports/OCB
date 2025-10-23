@@ -52,6 +52,7 @@ class MergePartnerAutomatic(models.TransientModel):
 
     # Group by
     group_by_email = fields.Boolean('Email')
+    group_by_phone = fields.Boolean('Phone')
     group_by_name = fields.Boolean('Name')
     group_by_is_company = fields.Boolean('Is Company')
     group_by_vat = fields.Boolean('VAT')
@@ -301,8 +302,9 @@ class MergePartnerAutomatic(models.TransientModel):
         if len(partner_ids) < 2:
             return
 
-        if len(partner_ids) > 3:
-            raise UserError(_("For safety reasons, you cannot merge more than 3 contacts together. You can re-open the wizard several times if needed."))
+        max_partners = self.env['ir.config_parameter'].sudo().get_param('max_partners_to_merge', '3')
+        if len(partner_ids) > int(max_partners):
+            raise UserError(_("For safety reasons, you cannot merge more than %s contacts together. You can re-open the wizard several times if needed.") % max_partners)
 
         # check if the list of partners to merge contains child/parent relation
         child_ids = self.env['res.partner']

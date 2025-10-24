@@ -42,12 +42,15 @@ class MergePartnerAutomatic(models.TransientModel):
         res = super(MergePartnerAutomatic, self).default_get(fields)
         active_ids = self.env.context.get('active_ids')
         if self.env.context.get('active_model') == 'res.partner' and active_ids:
+            selected_partners = self._get_ordered_partner(active_ids)
             if 'state' in fields:
                 res['state'] = 'selection'
             if 'partner_ids' in fields:
-                res['partner_ids'] = [(6, 0, active_ids)]
+                # Hay que hacer así la asignación para que funcione el dominio
+                res['partner_ids'] = selected_partners
+                # esto no funciona: res['partner_ids'] = [(6, 0, active_ids)]
             if 'dst_partner_id' in fields:
-                res['dst_partner_id'] = self._get_ordered_partner(active_ids)[-1].id
+                res['dst_partner_id'] = selected_partners[-1].id
         return res
 
     # Group by
@@ -68,7 +71,7 @@ class MergePartnerAutomatic(models.TransientModel):
     current_line_id = fields.Many2one('base.partner.merge.line', string='Current Line')
     line_ids = fields.One2many('base.partner.merge.line', 'wizard_id', string='Lines')
     partner_ids = fields.Many2many('res.partner', string='Contacts', context={'active_test': False})
-    dst_partner_id = fields.Many2one('res.partner', string='Destination Contact', domain=lambda self: [('id', 'in', self.partner_ids.ids)])
+    dst_partner_id = fields.Many2one('res.partner', string='Destination Contact', domain="[('id', 'in', partner_ids)]")
 
     exclude_contact = fields.Boolean('A user associated to the contact')
     exclude_journal_item = fields.Boolean('Journal Items associated to the contact')

@@ -711,10 +711,10 @@ class Partner(models.Model):
             name = name.replace('\n', '<br/>')
         if self._context.get('show_vat') and partner.vat:
             name = "%s ‒ %s" % (name, partner.vat)
-        if self.env.context.get('show_id'):
+        if self._context.get('show_id'):
             name = "%s | %s" % (
                 partner.id,
-                partner.name
+                name
             )
 
         return name
